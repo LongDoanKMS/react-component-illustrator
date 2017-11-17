@@ -1,8 +1,13 @@
 {
   "env": {
     "development": {
+			"presets": ["env"],
       "plugins": [
-        "babel-plugin-rewire"
+				"babel-plugin-rewire",
+				"transform-object-assign",
+				"transform-es2015-destructuring",
+				"transform-decorators-legacy",
+				"transform-runtime"
       ]
     }
   }

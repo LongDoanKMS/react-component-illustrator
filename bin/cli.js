@@ -11,7 +11,7 @@ var argv = require('yargs')
   .alias('f', 'outputFormat')
   .alias('v', 'verbose')
   .default('f', 'commonjs')
-  .check(function patternValidator(argv) {
+  .check(function patternValidator (argv) {
     if (!argv.pattern.length) {
       throw new Error('Please define at least one pattern for processing.');
     }

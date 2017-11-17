@@ -1,29 +1,31 @@
 'use strict';
 
-import fs from 'fs';
-import path from 'path';
+import {find, toRelativeJsPath} from './util';
+
 import dox from 'dox';
+import fs from 'fs';
+import {parse as parseReactDoc} from 'react-docgen';
+import path from 'path';
 import recast from 'recast';
 import walk from 'acorn-jsx-walk';
 import {simple as walkNode} from 'acorn-jsx-walk/lib/walk';
-import {parse as parseReactDoc} from 'react-docgen';
-import {find, toRelativeJsPath} from './util';
 
 // ---
 
 export default class Illustrator {
-  constructor(options) {
+  constructor (options) {
     this.options = options;
     this.store = {};
   }
 
   // ---
 
-  record(key) {
+  record (key) {
     return value => this.store[key] = value;
   }
 
-  processExample(file) {
+  processExample (file) {
+    console.log('processing example...', file)
     return Promise.resolve(file)
       .then(this.record('examplePath'))
       .then(() => this.relativePath(file))
@@ -32,29 +34,51 @@ export default class Illustrator {
       .then(this.record('exampleSource'))
       .then(this.parseExampleDoc.bind(this))
       .then(this.record('exampleDoc'))
+      .catch(function (e) {
+        console.error('Could not parse: ', file)
+      })
     ;
   }
 
-  processComponent(file) {
+  processComponent (file) {
+    console.log('processing component...', file)
     return Promise.resolve(file)
       .then(this.record('componentPath'))
+      .catch(function (e) {
+        console.error('Could not record(\'componentPath\'): ', file)
+      })
       .then(file => toRelativeJsPath(this.store.examplePath, file))
+      .catch(function (e) {
+        console.error('Could not toRelativeJsPath: ', file)
+      })
       .then(file => fs.readFileSync(file, {encoding: 'utf-8'}))
+      .catch(function (e) {
+        console.error('Could not utf-8 encode: ', file)
+      })
       .then(this.record('componentSource'))
+      .catch(function (e) {
+        console.error('Could not componentSource: ', file)
+      })
       .then(this.parseComponentDoc)
+      .catch(function (e) {
+        console.error('Could not parseComponentDoc: ', file)
+      })
       .then(this.record('componentDoc'))
+      .catch(function (e) {
+        console.error('Could not parse: ', file)
+      })
     ;
   }
 
-  parseExampleDoc(code) {
+  parseExampleDoc (code) {
     return dox.parseComments(code, this.options.doxOptions)[0];
   }
 
-  parseComponentDoc(code) {
+  parseComponentDoc (code) {
     return parseReactDoc(code);
   }
 
-  relativePath() {
+  relativePath () {
     let paths = Array.from(arguments, p => path.resolve(p));
     paths.unshift(this.options.dest ? path.dirname(this.options.dest) : path.resolve('.'));
 
@@ -67,7 +91,7 @@ export default class Illustrator {
     return relative;
   }
 
-  run() {
+  run () {
     let component = this.store.componentPath ? Object.assign({
       name: path.basename(this.store.componentPath, path.extname(this.store.componentPath)),
       path: path.resolve(this.store.componentPath),
@@ -93,7 +117,7 @@ export default class Illustrator {
     };
   }
 
-  get component() {
+  get component () {
     if (this.store.componentPath) {
       return this.store.componentPath;
     }
@@ -106,7 +130,7 @@ export default class Illustrator {
     return component ? path.resolve(this.store.examplePath, component) : null;
   }
 
-  getCommentTag(name) {
+  getCommentTag (name) {
     let results = this.store.exampleDoc.tags.filter(tag => tag.type === name);
     return results.length ? results[0] : {};
   }

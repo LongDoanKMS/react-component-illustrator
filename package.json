@@ -16,7 +16,7 @@
   },
   "scripts": {
     "test": "mocha --compilers js:babel/register -r test test/**/*.test.js",
-    "prepublish": "BABEL_ENV=production babel -d lib --optional runtime src"
+    "prepublish": "BABEL_ENV=development babel -d lib --optional runtime src"
   },
   "files": [
     "bin/",
@@ -30,17 +30,26 @@
   ],
   "dependencies": {
     "acorn-jsx-walk": "^1.0.1",
-    "babel-runtime": "^5.8.24",
+    "babel-cli": "^6.26.0",
+    "babel-runtime": "^6.26.0",
     "dox": "^0.8.0",
     "globby": "^3.0.0",
     "mkdirp": "^0.5.1",
-    "react-docgen": "^2.3.1",
+    "react-docgen": "^2.20.0",
     "recast": "^0.10.33",
     "yargs": "^3.24.0"
   },
   "devDependencies": {
-    "babel": "^5.8.23",
-    "babel-plugin-rewire": "^0.1.22",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-lodash": "^3.3.2",
+    "babel-plugin-rewire": "^1.1.0",
+    "babel-plugin-root-import": "^5.1.0",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-plugin-transform-es2015-destructuring": "^6.23.0",
+    "babel-plugin-transform-object-assign": "^6.22.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.1",
     "chai": "^3.2.0",
     "chai-as-promised": "^5.1.0",
     "mocha": "^2.3.2",
