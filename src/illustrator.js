@@ -25,7 +25,6 @@ export default class Illustrator {
   }
 
   processExample (file) {
-    console.log('processing example...', file)
     return Promise.resolve(file)
       .then(this.record('examplePath'))
       .then(() => this.relativePath(file))
@@ -41,7 +40,6 @@ export default class Illustrator {
   }
 
   processComponent (file) {
-    console.log('processing component...', file)
     return Promise.resolve(file)
       .then(this.record('componentPath'))
       .catch(function (e) {
