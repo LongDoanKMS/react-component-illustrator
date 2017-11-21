@@ -16,7 +16,7 @@
   },
   "scripts": {
     "test": "mocha --compilers js:babel/register -r test test/**/*.test.js",
-    "prepublish": "BABEL_ENV=development babel -d lib --optional runtime src",
+    "prepublish": "BABEL_ENV=production babel src --out-dir lib --plugins transform-runtime",
     "buildDev": "BABEL_ENV=development babel src --out-dir lib --plugins transform-runtime",
     "buildDev:watch": "BABEL_ENV=development babel src --out-dir lib --watch",
     "build": "BABEL_ENV=production babel src --out-dir lib --plugins transform-runtime"
