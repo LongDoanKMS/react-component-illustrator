@@ -7,8 +7,9 @@ import fs from 'fs';
 import {parse as parseReactDoc} from 'react-docgen';
 import path from 'path';
 import recast from 'recast';
-import walk from 'acorn-jsx-walk';
-import {simple as walkNode} from 'acorn-jsx-walk/lib/walk';
+// import walk from 'acorn-jsx-walk';
+import acorn from 'acorn-jsx';
+// import {simple as walkNode} from 'acorn-jsx-walk/lib/walk';
 
 // ---
 
@@ -96,8 +97,12 @@ export default class Illustrator {
       source: this.store.componentSource
     }, this.store.componentDoc) : null;
 
-    walk(this.store.exampleSource, {
-      MethodDefinition: (node) => node.key.name === 'render' && this.record('exampleRender')(recast.print(node).code)
+    acorn(this.store.exampleSource, {
+			ecmaVersion: 8,
+			MethodDefinition: (node) => node.key.name === 'render' && this.record('exampleRender')(recast.print(node).code),
+			plugins: {
+				jsx: true
+			}
     });
 
     let example = {
